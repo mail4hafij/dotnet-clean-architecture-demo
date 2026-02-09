@@ -2,6 +2,8 @@
 
 A modern .NET application demonstrating clean architecture principles with **Mediator**, **Factory**, **Unit of Work**, and **Repository** patterns. This project showcases how to build maintainable, scalable applications with clear architectural boundaries and minimal dependencies.
 
+**📖 [View the Complete Architecture Guide](https://mail4hafij.github.io/dotnet-clean-architecture-demo/ARCHITECTURE_GUIDE.html)** - Interactive visual guide with diagrams and code comparisons
+
 Developed by [Mohammad Hafijur Rahman](https://github.com/mail4hafij) | Free to use with attribution
 
 ---
@@ -416,4 +418,5 @@ Developed by **Mohammad Hafijur Rahman**
 ---
 
 **⭐ If you find this framework helpful, please star the repository!**
+
 
