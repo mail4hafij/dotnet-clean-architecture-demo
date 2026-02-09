@@ -134,7 +134,7 @@ The project includes seed data for testing:
 
 ## 🏛 Architecture Overview
 
-### Conceptual Model
+### Conceptual Flow
 
 ```
 Controller (REST API)
@@ -150,7 +150,6 @@ Database
 
 Any request from a controller is handled by a **Handler** via the **HandlerCaller**. The Handler uses **Logic** classes (via LogicFactory) to implement business rules. Logic classes use **Repositories** (via RepositoryFactory) for data access. All operations within a Handler share a **Unit of Work** for transactional consistency.
 
-![Architecture Diagram](concept.jpg)
 
 ---
 
@@ -417,3 +416,4 @@ Developed by **Mohammad Hafijur Rahman**
 ---
 
 **⭐ If you find this framework helpful, please star the repository!**
+
