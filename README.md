@@ -193,7 +193,6 @@ public class BusinessService
 - **Dependency explosion** - Services inject other Services infinitely
 - **Mixed concerns** - Business logic + data access + infrastructure all mixed together
 - **Testing nightmare** - Need to mock 15+ dependencies per test
-- **Circular dependencies** - Hard to detect and debug when they occur
 
 ### The Factory Pattern Solution
 
