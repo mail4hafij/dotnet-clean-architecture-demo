@@ -396,7 +396,7 @@
                                 <li><strong>Dependency explosion:</strong> Services inject other Services infinitely</li>
                                 <li><strong>Mixed concerns:</strong> Business logic + data access + infrastructure all mixed</li>
                                 <li><strong>Testing nightmare:</strong> Need to mock 15+ dependencies per test</li>
-                                <li><strong>Circular dependencies:</strong> Won't know until runtime crash!</li>
+                                <li><strong>Circular dependencies:</strong> Hard to detect and debug when they occur</li>
                             </ul>
                         </div>
                     </div>
@@ -443,10 +443,6 @@
                     <div class="pattern-card">
                         <h4>🔍 Invisible Dependencies</h4>
                         <p>Looking at a constructor with 20 services, can you tell which are actually used? Which are critical vs optional? What depends on what? The dependency graph is hidden in implementation details.</p>
-                    </div>
-                    <div class="pattern-card">
-                        <h4>🔄 Circular Dependency Hell</h4>
-                        <p>ServiceA needs ServiceB, ServiceB needs ServiceC, ServiceC needs ServiceA. You won't know until runtime when the DI container explodes. No compile-time safety.</p>
                     </div>
                     <div class="pattern-card">
                         <h4>🗑️ Unused Services Everywhere</h4>
@@ -597,22 +593,7 @@
                 </div>
 
                 <div class="benefits">
-                    <h3>2. Prevents Circular Dependencies (Compile-Time Safety)</h3>
-                    <pre><span class="comment">// This WON'T COMPILE - you can't create the factory!</span>
-<span class="keyword">public interface</span> <span class="type">ILogicFactory</span>
-{
-    <span class="type">IOrderLogic</span> CreateOrderLogic(<span class="type">IUnitOfWork</span> uow);
-    <span class="type">ICarLogic</span> CreateCarLogic(<span class="type">IUnitOfWork</span> uow);
-}
-
-<span class="comment">// If OrderLogic needs CarLogic, and CarLogic needs OrderLogic,</span>
-<span class="comment">// the LogicFactory implementation will fail to compile.</span>
-<span class="comment">// You catch the circular dependency immediately!</span></pre>
-                    <p><strong>With service injection?</strong> Circular dependencies only fail at runtime when the DI container starts. You might not catch it until production!</p>
-                </div>
-
-                <div class="benefits">
-                    <h3>3. No More Dead Dependencies</h3>
+                    <h3>2. No More Dead Dependencies</h3>
                     <pre><span class="comment">// Method CLEARLY shows its dependencies</span>
 <span class="keyword">public void</span> ProcessOrder(<span class="keyword">long</span> orderId)
 {
@@ -629,7 +610,7 @@
                 </div>
 
                 <div class="benefits">
-                    <h3>4. Architecture Enforcement (The Killer Feature)</h3>
+                    <h3>3. Architecture Enforcement (The Killer Feature)</h3>
                     <pre><span class="comment">// GOOD: Handler uses Logic layer correctly</span>
 <span class="keyword">public class</span> <span class="type">CreateOrderHandler</span>
 {
