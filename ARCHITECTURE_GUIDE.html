@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Architecture Demo - Design Patterns</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.4em;
+            margin: 20px 0 15px 0;
+        }
+
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .tech-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .tech-item strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .pattern-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .pattern-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .pattern-card h4 {
+            color: #667eea;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .comparison-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        .comparison-box.bad {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .comparison-box.good {
+            border-color: #28a745;
+            background: #f0fff4;
+        }
+
+        .comparison-box h4 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .comparison-box.bad h4 {
+            color: #dc3545;
+        }
+
+        .comparison-box.good h4 {
+            color: #28a745;
+        }
+
+        pre {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .keyword { color: #c678dd; }
+        .type { color: #e5c07b; }
+        .string { color: #98c379; }
+        .comment { color: #5c6370; font-style: italic; }
+
+        .benefits {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .benefits ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .benefits li {
+            padding: 10px 0 10px 30px;
+            position: relative;
+        }
+
+        .benefits li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .dependency-graph {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .graph-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        .graph-box h4 {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .graph-layer {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .graph-layer.messy {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .graph-layer.clean {
+            border-color: #28a745;
+            background: #f0fff4;
+        }
+
+        .layer-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .layer-deps {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .arrow {
+            text-align: center;
+            font-size: 1.5em;
+            color: #667eea;
+            margin: 5px 0;
+        }
+
+        .arrow.messy-arrow {
+            color: #dc3545;
+        }
+
+        .arrow.clean-arrow {
+            color: #28a745;
+        }
+
+        .dependency-count {
+            display: inline-block;
+            background: #dc3545;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+
+        .dependency-count.good {
+            background: #28a745;
+        }
+
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .dependency-graph {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Clean Architecture Demo</h1>
+            <p>Design Patterns</p>
+        </header>
+
+        <div class="content">
+            <!-- Tech Stack -->
+            <section>
+                <h2>Tech Stack</h2>
+                <div class="tech-stack">
+                    <div class="tech-item">
+                        <strong>.NET 10</strong>
+                        Latest .NET framework with C# 13
+                    </div>
+                    <div class="tech-item">
+                        <strong>Entity Framework Core</strong>
+                        ORM for database access with Code First approach
+                    </div>
+                    <div class="tech-item">
+                        <strong>Autofac</strong>
+                        IoC container for dependency injection
+                    </div>
+                    <div class="tech-item">
+                        <strong>AutoMapper</strong>
+                        Object-to-object mapping for DTOs
+                    </div>
+                    <div class="tech-item">
+                        <strong>ASP.NET Core Web API</strong>
+                        RESTful API with Swagger/OpenAPI
+                    </div>
+                    <div class="tech-item">
+                        <strong>SQL Server</strong>
+                        Relational database with migrations
+                    </div>
+                </div>
+            </section>
+
+            <!-- Design Patterns -->
+            <section>
+                <h2>Design Patterns Implemented</h2>
+                <div class="pattern-list">
+                    <div class="pattern-card">
+                        <h4>Mediator Pattern</h4>
+                        <p>Request/Response handlers decouple controllers from business logic. Each request has a dedicated handler that processes it and returns a response.</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h4>Factory Pattern</h4>
+                        <p>Factories create instances on-demand with proper dependencies. Keeps constructors clean and manages object creation complexity.</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h4>Unit of Work Pattern</h4>
+                        <p>Manages database transactions and ensures all operations succeed or fail together. Provides a single commit point for consistency.</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h4>Repository Pattern</h4>
+                        <p>Abstracts data access logic from business logic. Provides a collection-like interface for querying and persisting entities.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- The Problem -->
+            <section>
+                <h2>Why Factory Pattern Over Service Injection?</h2>
+
+                <div class="highlight-box">
+                    <strong>The Real Issue:</strong> It's not about having fewer lines - it's about <strong>architectural visibility, dependency control, and maintainability</strong>. With service injection, your architecture becomes invisible and dependencies spiral out of control.
+                </div>
+
+                <h3>Visual Comparison: Dependency Graphs</h3>
+                <div class="dependency-graph">
+                    <div class="graph-box">
+                        <h4 style="color: #dc3545;">❌ Traditional "Service" Architecture</h4>
+
+                        <div class="graph-layer messy">
+                            <div class="layer-title">Controller</div>
+                            <div class="layer-deps">Injects: IBusinessService <span class="dependency-count good">1</span></div>
+                        </div>
+                        <div class="arrow messy-arrow">↓ Seems fine... but wait</div>
+                        <div class="graph-layer messy">
+                            <div class="layer-title">BusinessService</div>
+                            <div class="layer-deps">Injects: IDataRepo, IUserRepo, IProductRepo, IValidationService, IEmailService, IPaymentService, INotificationService, IMapper, ILogger, IConfig, ICache... <span class="dependency-count">15+</span></div>
+                        </div>
+                        <div class="arrow messy-arrow">↓ Services inject more Services...</div>
+                        <div class="graph-layer messy">
+                            <div class="layer-title">ValidationService</div>
+                            <div class="layer-deps">Injects: IUserRepo, IProductRepo, IRuleEngine, ILogger, ICache... <span class="dependency-count">8+</span></div>
+                        </div>
+                        <div class="arrow messy-arrow">↓ More Services...</div>
+                        <div class="graph-layer messy">
+                            <div class="layer-title">EmailService, PaymentService, etc.</div>
+                            <div class="layer-deps">Each injects 5-10 more dependencies <span class="dependency-count">5-10 each</span></div>
+                        </div>
+
+                        <div style="margin-top: 20px; padding: 15px; background: #fff; border-left: 3px solid #dc3545;">
+                            <strong>Problems:</strong>
+                            <ul style="margin-top: 10px; font-size: 0.9em;">
+                                <li><strong>No layers:</strong> Everything is a "Service" - no clear separation</li>
+                                <li><strong>Dependency explosion:</strong> Services inject other Services infinitely</li>
+                                <li><strong>Mixed concerns:</strong> Business logic + data access + infrastructure all mixed</li>
+                                <li><strong>Testing nightmare:</strong> Need to mock 15+ dependencies per test</li>
+                                <li><strong>Circular dependencies:</strong> Won't know until runtime crash!</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="graph-box">
+                        <h4 style="color: #28a745;">✓ Factory Pattern: Clear Layers</h4>
+
+                        <div class="graph-layer clean">
+                            <div class="layer-title">Controller</div>
+                            <div class="layer-deps">Calls: Handler via CoreService <span class="dependency-count good">1</span></div>
+                        </div>
+                        <div class="arrow clean-arrow">↓ Handler pattern (orchestration)</div>
+                        <div class="graph-layer clean">
+                            <div class="layer-title">Handler</div>
+                            <div class="layer-deps">Depends on: ILogicFactory <span class="dependency-count good">1</span></div>
+                        </div>
+                        <div class="arrow clean-arrow">↓ Creates logic on-demand</div>
+                        <div class="graph-layer clean">
+                            <div class="layer-title">Logic (Business Rules)</div>
+                            <div class="layer-deps">Depends on: IRepositoryFactory, ILogicFactory <span class="dependency-count good">2</span></div>
+                        </div>
+                        <div class="arrow clean-arrow">↓ Creates repos/logic on-demand</div>
+                        <div class="graph-layer clean">
+                            <div class="layer-title">Repository (Data Access)</div>
+                            <div class="layer-deps">Depends on: IUnitOfWork <span class="dependency-count good">1</span></div>
+                        </div>
+
+                        <div style="margin-top: 20px; padding: 15px; background: #fff; border-left: 3px solid #28a745;">
+                            <strong>Benefits:</strong>
+                            <ul style="margin-top: 10px; font-size: 0.9em;">
+                                <li><strong>Clear layers:</strong> Controller → Handler → Logic → Repository</li>
+                                <li><strong>Bounded:</strong> Each layer has 1-2 dependencies maximum</li>
+                                <li><strong>Isolated:</strong> Adding Logic dependency doesn't affect Handler</li>
+                                <li><strong>Testable:</strong> Mock 1-2 factories instead of 15 services</li>
+                                <li><strong>Compile-time safety:</strong> Architecture enforced by compiler!</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>The Architectural Problems with Service Injection</h3>
+
+                <div class="pattern-list">
+                    <div class="pattern-card">
+                        <h4>🔍 Invisible Dependencies</h4>
+                        <p>Looking at a constructor with 20 services, can you tell which are actually used? Which are critical vs optional? What depends on what? The dependency graph is hidden in implementation details.</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h4>🔄 Circular Dependency Hell</h4>
+                        <p>ServiceA needs ServiceB, ServiceB needs ServiceC, ServiceC needs ServiceA. You won't know until runtime when the DI container explodes. No compile-time safety.</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h4>🗑️ Unused Services Everywhere</h4>
+                        <p>A class gets 15 services injected. Three months later, only 8 are actually used. But you can't remove them - what if something breaks? Nobody knows.</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h4>🏗️ No Architectural Enforcement</h4>
+                        <p>Nothing stops a Controller from injecting a Repository directly, bypassing the Logic layer. Your clean architecture is just a suggestion, not enforced by the compiler.</p>
+                    </div>
+                </div>
+
+                <h3>Code Comparison: Traditional Service Class vs Factory Pattern</h3>
+
+                <div class="comparison">
+                    <div class="comparison-box bad">
+                        <h4>❌ Traditional Service Class (Everything is a "Service")</h4>
+                        <pre><span class="keyword">public class</span> <span class="type">BusinessService</span>
+{
+    <span class="comment">// In older projects: Everything is a "Service"</span>
+    <span class="comment">// No Logic/Handler separation - just Services everywhere</span>
+    <span class="comment">// This Service injects other Services, Repositories, everything!</span>
+
+    <span class="keyword">public</span> <span class="type">BusinessService</span>(
+        <span class="type">IDataRepository</span> dataRepo,
+        <span class="type">IUserRepository</span> userRepo,
+        <span class="type">IProductRepository</span> productRepo,
+        <span class="type">ICustomerRepository</span> customerRepo,
+        <span class="type">IValidationService</span> validationService,
+        <span class="type">INotificationService</span> notificationService,
+        <span class="type">IEmailService</span> emailService,
+        <span class="type">IPaymentService</span> paymentService,
+        <span class="type">IInventoryService</span> inventoryService,
+        <span class="type">IShippingService</span> shippingService,
+        <span class="type">ILogger</span> logger,
+        <span class="type">IMapper</span> mapper,
+        <span class="type">IConfiguration</span> config,
+        <span class="type">ICache</span> cache)
+    {
+        <span class="comment">// 14 dependencies! And this is a LIGHT example.</span>
+        <span class="comment">// Real projects have 20-30+ injections.</span>
+        <span class="comment">// What layer is this? Business logic? Data access?</span>
+        <span class="comment">// Orchestration? Nobody knows!</span>
+    }
+}</pre>
+                        <div style="margin-top: 15px; padding: 10px; background: #fff; border-left: 3px solid #dc3545;">
+                            <strong>Problems in Traditional Service Architecture:</strong>
+                            <ul style="margin-top: 10px;">
+                                <li><strong>No layering:</strong> Everything is a "Service" - repositories mixed with business logic mixed with infrastructure</li>
+                                <li><strong>Service hell:</strong> Services depend on other Services which depend on more Services</li>
+                                <li><strong>Unclear responsibilities:</strong> What does "BusinessService" even do? Business logic? Data access? Both?</li>
+                                <li><strong>Transitive explosion:</strong> If this Service needs one more dependency, every class that uses it must be updated</li>
+                                <li><strong>No boundaries:</strong> Nothing prevents a Service from directly accessing repositories, bypassing validation</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="comparison-box good">
+                        <h4>✓ Factory Pattern - Handler Shows Clear Dependencies</h4>
+                        <pre><span class="comment">// Handler: Clean constructor with only 2 factories</span>
+<span class="keyword">public class</span> <span class="type">CreateOrderHandler</span> : <span class="type">RequestHandler</span>&lt;<span class="type">CreateOrderReq</span>, <span class="type">CreateOrderResp</span>&gt;
+{
+    <span class="keyword">private readonly</span> <span class="type">ILogicFactory</span> _logicFactory;
+    <span class="keyword">private readonly</span> <span class="type">IUnitOfWorkFactory</span> _unitOfWorkFactory;
+
+    <span class="keyword">public</span> CreateOrderHandler(
+        <span class="type">ILogicFactory</span> logicFactory,
+        <span class="type">IUnitOfWorkFactory</span> uowFactory,
+        <span class="type">IResponseFactory</span> responseFactory)
+        : <span class="keyword">base</span>(uowFactory, responseFactory)
+    {
+        _logicFactory = logicFactory;
+        _unitOfWorkFactory = uowFactory;
+    }
+
+    <span class="keyword">public override</span> <span class="type">CreateOrderResp</span> Process(<span class="type">CreateOrderReq</span> req)
+    {
+        <span class="keyword">using</span> (<span class="keyword">var</span> unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+        {
+            <span class="comment">// Create CarLogic first</span>
+            <span class="keyword">var</span> carLogic = _logicFactory.CreateCarLogic(unitOfWork);
+
+            <span class="comment">// Create OrderLogic and PASS CarLogic as constructor argument</span>
+            <span class="comment">// Dependencies are VISIBLE right here!</span>
+            <span class="keyword">var</span> orderLogic = _logicFactory.CreateOrderLogic(unitOfWork, carLogic);
+
+            <span class="comment">// Now OrderLogic can use CarLogic</span>
+            orderLogic.CreateOrder(req.UserId, req.OrderItems);
+
+            unitOfWork.Commit();
+        }
+
+        <span class="keyword">return new</span> <span class="type">CreateOrderResp</span> { Success = <span class="keyword">true</span> };
+    }
+}
+
+<span class="comment">// OrderLogic: Takes CarLogic as constructor parameter</span>
+<span class="keyword">public class</span> <span class="type">OrderLogic</span> : <span class="type">LogicBase</span>
+{
+    <span class="keyword">private readonly</span> <span class="type">IRepositoryFactory</span> _repositoryFactory;
+    <span class="keyword">private readonly</span> <span class="type">ICarLogic</span> _carLogic;  <span class="comment">// Dependency injected via constructor!</span>
+
+    <span class="keyword">public</span> OrderLogic(
+        <span class="type">IRepositoryFactory</span> repositoryFactory,
+        <span class="type">ICarLogic</span> carLogic,  <span class="comment">// CarLogic passed as parameter - dependency is VISIBLE!</span>
+        <span class="type">IUnitOfWork</span> unitOfWork)
+        : <span class="keyword">base</span>(unitOfWork)
+    {
+        _repositoryFactory = repositoryFactory;
+        _carLogic = carLogic;  <span class="comment">// Not created internally - passed in!</span>
+    }
+
+    <span class="keyword">public void</span> CreateOrder(<span class="keyword">long</span> userId, <span class="type">List</span>&lt;<span class="type">OrderItem</span>&gt; items)
+    {
+        <span class="comment">// Get repositories when needed</span>
+        <span class="keyword">var</span> orderRepo = _repositoryFactory.CreateOrderRepository(_unitOfWork);
+        <span class="keyword">var</span> userRepo = _repositoryFactory.CreateUserRepository(_unitOfWork);
+
+        <span class="comment">// Use the injected CarLogic</span>
+        <span class="keyword">var</span> user = userRepo.GetUser(userId);
+        <span class="keyword">var</span> userCarCount = _carLogic.GetUserCarCount(userId);
+
+        <span class="comment">// Business logic: Users with cars get 10% discount</span>
+        <span class="keyword">decimal</span> discount = userCarCount &gt; 0 ? 0.10m : 0.00m;
+
+        <span class="comment">// Create the order...</span>
+    }
+}</pre>
+                        <div style="margin-top: 15px; padding: 10px; background: #fff; border-left: 3px solid #28a745;">
+                            <strong>Why This Is Better:</strong>
+                            <ul style="margin-top: 10px;">
+                                <li><strong>Dependencies visible in Handler:</strong> You can SEE that OrderLogic depends on CarLogic (line where it's created)</li>
+                                <li><strong>Constructor shows dependencies:</strong> OrderLogic constructor signature reveals it needs ICarLogic</li>
+                                <li><strong>No hidden dependencies:</strong> Nothing happens "magically" inside Logic classes</li>
+                                <li><strong>No constructor bloat:</strong> Handler still has 2 factories, creates dependencies on-demand</li>
+                                <li><strong>Easy to understand:</strong> Looking at Handler, you immediately see the dependency graph</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Real Architectural Benefits (Beyond "Fewer Lines")</h3>
+
+                <div class="benefits">
+                    <h3>1. Dependency Visibility & Control</h3>
+                    <p><strong>With traditional Service classes?</strong> A "BusinessService" might inject 5 repositories, 8 other services, 3 mappers, 2 loggers, cache, config... Good luck figuring out what it does or what layer it represents!</p>
+                    <p><strong>With Factory Pattern?</strong> The constructor signature immediately reveals the class's architectural role. Handler has factories, Logic has repositories and other Logic, Repository has only UnitOfWork. Clean, predictable, and self-documenting.</p>
+                </div>
+
+                <div class="benefits">
+                    <h3>2. Prevents Circular Dependencies (Compile-Time Safety)</h3>
+                    <pre><span class="comment">// This WON'T COMPILE - you can't create the factory!</span>
+<span class="keyword">public interface</span> <span class="type">ILogicFactory</span>
+{
+    <span class="type">IOrderLogic</span> CreateOrderLogic(<span class="type">IUnitOfWork</span> uow);
+    <span class="type">ICarLogic</span> CreateCarLogic(<span class="type">IUnitOfWork</span> uow);
+}
+
+<span class="comment">// If OrderLogic needs CarLogic, and CarLogic needs OrderLogic,</span>
+<span class="comment">// the LogicFactory implementation will fail to compile.</span>
+<span class="comment">// You catch the circular dependency immediately!</span></pre>
+                    <p><strong>With service injection?</strong> Circular dependencies only fail at runtime when the DI container starts. You might not catch it until production!</p>
+                </div>
+
+                <div class="benefits">
+                    <h3>3. No More Dead Dependencies</h3>
+                    <pre><span class="comment">// Method CLEARLY shows its dependencies</span>
+<span class="keyword">public void</span> ProcessOrder(<span class="keyword">long</span> orderId)
+{
+    <span class="keyword">var</span> orderRepo = _repositoryFactory.CreateOrderRepository(_unitOfWork);
+    <span class="keyword">var</span> carLogic = _logicFactory.CreateCarLogic(_unitOfWork);
+
+    <span class="comment">// That's it! Only 2 dependencies.</span>
+    <span class="comment">// No hidden services lurking in the constructor.</span>
+}
+
+<span class="comment">// Want to refactor? Just delete the lines you don't use.</span>
+<span class="comment">// No need to update constructors, tests, or IoC registrations.</span></pre>
+                    <p><strong>With service injection?</strong> You have 15 services in the constructor. Are they all used? In which methods? Nobody knows. Everyone's afraid to remove them.</p>
+                </div>
+
+                <div class="benefits">
+                    <h3>4. Architecture Enforcement (The Killer Feature)</h3>
+                    <pre><span class="comment">// GOOD: Handler uses Logic layer correctly</span>
+<span class="keyword">public class</span> <span class="type">CreateOrderHandler</span>
+{
+    <span class="keyword">public</span> CreateOrderHandler(<span class="type">ILogicFactory</span> logicFactory) { }
+    <span class="comment">// ✓ Can only access logic, not repositories directly</span>
+}
+
+<span class="comment">// BAD: This won't compile! Handler can't get repository factory!</span>
+<span class="keyword">public class</span> <span class="type">BadHandler</span>
+{
+    <span class="comment">// ✗ Handler trying to bypass logic layer</span>
+    <span class="keyword">public</span> BadHandler(<span class="type">IRepositoryFactory</span> repoFactory) { }
+    <span class="comment">// Compile error: IRepositoryFactory not registered for handlers!</span>
+}</pre>
+                    <p><strong>Factory pattern enforces your architecture at compile time.</strong> You can't accidentally violate layering because the factories physically prevent it.</p>
+                    <p><strong>With service injection?</strong> Nothing stops a handler from injecting <code>IOrderRepository</code> directly. Your "clean architecture" is just a polite suggestion.</p>
+                </div>
+
+                <div class="benefits">
+                    <h3>5. Transitive Dependencies Stay Hidden</h3>
+                    <pre><span class="comment">// Handler orchestrates business logic</span>
+<span class="keyword">public class</span> <span class="type">ProcessRequestHandler</span>
+{
+    <span class="keyword">public</span> ProcessRequestHandler(<span class="type">ILogicFactory</span> logicFactory)
+    {
+        <span class="comment">// Handler only knows it uses business logic</span>
+    }
+
+    <span class="keyword">public void</span> Process()
+    {
+        <span class="keyword">var</span> businessLogic = _logicFactory.CreateBusinessLogic(_uow);
+        businessLogic.ProcessData(dataId);
+        <span class="comment">// BusinessLogic internally uses ValidationLogic</span>
+        <span class="comment">// Handler doesn't need to know or care!</span>
+    }
+}</pre>
+                    <p><strong>With traditional Service classes?</strong> If BusinessService needs ValidationService, then every class that uses BusinessService must also inject ValidationService and pass it through the constructor. Dependencies cascade through your entire codebase!</p>
+                </div>
+
+                <div class="benefits">
+                    <h3>6. Discoverability & Onboarding</h3>
+                    <p>New developer looks at your code:</p>
+                    <pre><span class="comment">// "Oh, this is a Handler. It uses logic classes."</span>
+<span class="keyword">public</span> MyHandler(<span class="type">ILogicFactory</span> logicFactory) { }
+
+<span class="comment">// "This is Logic. It uses repositories and other logic."</span>
+<span class="keyword">public</span> MyLogic(<span class="type">IRepositoryFactory</span> repoFactory, <span class="type">ILogicFactory</span> logicFactory) { }
+
+<span class="comment">// "This is a Repository. It only does data access."</span>
+<span class="keyword">public</span> MyRepository(<span class="type">IUnitOfWork</span> uow) { }</pre>
+                    <p><strong>The factory types in the constructor ARE your architecture diagram.</strong> No need to read documentation - the code is self-documenting.</p>
+                </div>
+
+                <div class="benefits">
+                    <h3>7. Real Maintenance Scenarios</h3>
+                    <p><strong>Scenario: Your business logic needs to send emails</strong></p>
+
+                    <div class="comparison" style="margin-top: 15px;">
+                        <div style="background: #fff5f5; padding: 15px; border-left: 3px solid #dc3545;">
+                            <strong>With Traditional Service Classes:</strong>
+                            <ol style="margin-left: 20px; margin-top: 10px;">
+                                <li>Update BusinessService constructor (add IEmailService)</li>
+                                <li>Update Controller constructor (add IEmailService to pass through)</li>
+                                <li>Update EVERY test that creates BusinessService (mock IEmailService)</li>
+                                <li>Update IoC container registrations</li>
+                                <li>Find all places that new up BusinessService - update them all</li>
+                                <li>Hope you didn't break anything</li>
+                            </ol>
+                            <p style="margin-top: 10px; color: #dc3545;"><strong>Result: 6+ files changed, 30+ minutes, risky</strong></p>
+                        </div>
+
+                        <div style="background: #f0fff4; padding: 15px; border-left: 3px solid #28a745;">
+                            <strong>With Factory Pattern:</strong>
+                            <ol style="margin-left: 20px; margin-top: 10px;">
+                                <li>Add email functionality to LogicFactory interface</li>
+                                <li>Implement it in LogicFactory class</li>
+                                <li>Use it in BusinessLogic: <code>_logicFactory.CreateEmailLogic(_uow)</code></li>
+                            </ol>
+                            <p style="margin-top: 10px; color: #28a745;"><strong>Result: 2 files changed, 5 minutes, safe</strong></p>
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 20px;"><strong>Scenario: Remove unused dependency</strong></p>
+
+                    <div class="comparison" style="margin-top: 15px;">
+                        <div style="background: #fff5f5; padding: 15px; border-left: 3px solid #dc3545;">
+                            <strong>With Traditional Service Classes:</strong>
+                            <p style="margin-top: 10px;">You see <code>IInventoryService</code> in constructor with 14 other services. Is it used? Better search the entire file... multiple methods... hundreds of lines. Oh, it's not used anymore. But if you remove it from the constructor, do all the tests still pass? What about other classes that construct this Service? What if someone is using it somewhere you didn't check? Better leave it alone to be safe.</p>
+                            <p style="margin-top: 10px; color: #dc3545;"><strong>Result: Dead dependency stays forever, bloating your codebase</strong></p>
+                        </div>
+
+                        <div style="background: #f0fff4; padding: 15px; border-left: 3px solid #28a745;">
+                            <strong>With Factory Pattern:</strong>
+                            <p style="margin-top: 10px;">Search the Logic class for <code>_repositoryFactory.CreateInventoryRepository</code> or <code>_logicFactory.CreateInventoryLogic</code>. Not found? Delete that one line. Done. The factories stay in the constructor unchanged, so nothing breaks in tests or calling code.</p>
+                            <p style="margin-top: 10px; color: #28a745;"><strong>Result: 1 line deleted, 30 seconds, zero risk</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>Bottom Line:</strong> Factory pattern isn't about fewer lines. It's about making your architecture <strong>visible</strong>, <strong>enforceable</strong>, and <strong>maintainable</strong>. When you look at a factory-based class, you immediately understand its role, its dependencies, and its boundaries. That's the real win.
+                </div>
+            </section>
+
+            <!-- Architecture Layers -->
+            <section>
+                <h2>Architecture Layers</h2>
+                <div class="pattern-list">
+                    <div class="pattern-card">
+                        <h4>Controllers (Rest Layer)</h4>
+                        <p>Handle HTTP requests, call handlers through CoreService, return responses. No business logic here.</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h4>Handlers (Core Layer)</h4>
+                        <p>Process requests using Logic classes. Manage UnitOfWork lifecycle, handle errors, return typed responses.</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h4>Logic Classes (Core Layer)</h4>
+                        <p>Contain business rules and validation. Can depend on repositories and other logic classes via factories.</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h4>Repositories (Core Layer)</h4>
+                        <p>Direct database access using EF Core. CRUD operations and queries. No business logic.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Testing Endpoints -->
+            <section>
+                <h2>Testing the Demo</h2>
+                <h3>Available API Endpoints</h3>
+                <pre><span class="comment">// Car endpoints (Simple Logic)</span>
+<span class="keyword">POST</span> /api/Car
+    - Add a car with validation using CarLogic
+
+<span class="keyword">GET</span> /api/Car/user/{userId}
+    - List all cars for a user
+
+<span class="comment">// Order endpoints (Complex Logic)</span>
+<span class="keyword">POST</span> /api/Order
+    - Create an order with validation
+
+<span class="keyword">POST</span> /api/Order/{orderId}/cancel
+    - Cancel an order
+
+<span class="keyword">GET</span> /api/Order/{orderId}/summary
+    - Get order summary (demonstrates OrderLogic using CarLogic)
+
+<span class="keyword">GET</span> /api/Order/user/{userId}
+    - List all orders for a user with items</pre>
+
+                <p><strong>Seed Data:</strong> User ID 1 has 2 cars and 2 orders with items pre-configured for testing.</p>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
