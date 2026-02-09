@@ -387,16 +387,6 @@ public class BadHandler
 
 ---
 
-## 🎓 Learn More
-
-For a detailed explanation of the patterns and architecture, open **ARCHITECTURE_GUIDE.html** in your browser. It includes:
-- Visual dependency graphs
-- Side-by-side code comparisons
-- Real maintenance scenarios
-- In-depth explanations of each pattern
-
----
-
 ## 📝 License
 
 This framework is **free to use** - just keep the credit in file headers. See individual files for attribution.
