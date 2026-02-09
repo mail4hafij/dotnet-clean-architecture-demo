@@ -470,23 +470,24 @@
     <span class="comment">// This Service injects other Services, Repositories, everything!</span>
 
     <span class="keyword">public</span> <span class="type">BusinessService</span>(
-        <span class="type">IDataRepository</span> dataRepo,
-        <span class="type">IUserRepository</span> userRepo,
-        <span class="type">IProductRepository</span> productRepo,
-        <span class="type">ICustomerRepository</span> customerRepo,
+        <span class="type">IUserService</span> userService,
+        <span class="type">IOrderService</span> orderService,
+        <span class="type">IProductService</span> productService,
+        <span class="type">ICustomerService</span> customerService,
         <span class="type">IValidationService</span> validationService,
         <span class="type">INotificationService</span> notificationService,
         <span class="type">IEmailService</span> emailService,
         <span class="type">IPaymentService</span> paymentService,
         <span class="type">IInventoryService</span> inventoryService,
         <span class="type">IShippingService</span> shippingService,
+        <span class="type">IDataRepository</span> dataRepo,
         <span class="type">ILogger</span> logger,
         <span class="type">IMapper</span> mapper,
         <span class="type">IConfiguration</span> config,
         <span class="type">ICache</span> cache)
     {
-        <span class="comment">// 14 dependencies! And this is a LIGHT example.</span>
-        <span class="comment">// Real projects have 20-30+ injections.</span>
+        <span class="comment">// 15 dependencies! And this is a LIGHT example.</span>
+        <span class="comment">// Real projects have 20-30+ service injections.</span>
         <span class="comment">// What layer is this? Business logic? Data access?</span>
         <span class="comment">// Orchestration? Nobody knows!</span>
     }
