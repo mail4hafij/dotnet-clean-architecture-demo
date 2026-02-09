@@ -59,7 +59,6 @@ Factories create instances on-demand with proper dependencies. Keeps constructor
 
 **Key Benefits:**
 - **Architectural visibility** - Constructor signature reveals the layer role
-- **Compile-time safety** - Circular dependencies fail at compile-time, not runtime
 - **No dead dependencies** - Only create what you use, when you use it
 - **Enforced boundaries** - Handlers can't access repositories directly (compiler prevents it)
 
@@ -194,7 +193,7 @@ public class BusinessService
 - **Dependency explosion** - Services inject other Services infinitely
 - **Mixed concerns** - Business logic + data access + infrastructure all mixed together
 - **Testing nightmare** - Need to mock 15+ dependencies per test
-- **Circular dependencies** - Won't know until runtime crash!
+- **Circular dependencies** - Hard to detect and debug when they occur
 
 ### The Factory Pattern Solution
 
@@ -290,23 +289,7 @@ public class OrderLogic : LogicBase
 
 **With Factory Pattern?** The constructor signature immediately reveals the class's architectural role. Handler has factories, Logic has repositories and other Logic, Repository has only UnitOfWork. Clean, predictable, and self-documenting.
 
-### 2. Prevents Circular Dependencies (Compile-Time Safety)
-
-```csharp
-public interface ILogicFactory
-{
-    IOrderLogic CreateOrderLogic(IUnitOfWork uow);
-    ICarLogic CreateCarLogic(IUnitOfWork uow);
-}
-
-// If OrderLogic needs CarLogic, and CarLogic needs OrderLogic,
-// the LogicFactory implementation will fail to compile.
-// You catch the circular dependency immediately!
-```
-
-**With service injection?** Circular dependencies only fail at runtime when the DI container starts. You might not catch it until production!
-
-### 3. No More Dead Dependencies
+### 2. No More Dead Dependencies
 
 ```csharp
 public void ProcessData(long id)
@@ -324,7 +307,7 @@ public void ProcessData(long id)
 
 **With service injection?** You have 15 services in the constructor. Are they all used? In which methods? Nobody knows. Everyone's afraid to remove them.
 
-### 4. Architecture Enforcement (The Killer Feature)
+### 3. Architecture Enforcement (The Killer Feature)
 
 ```csharp
 // GOOD: Handler uses Logic layer correctly
