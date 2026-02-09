@@ -167,22 +167,23 @@ public class BusinessService
 {
     // What does this class even do? You need to read the entire implementation to know.
     public BusinessService(
-        IDataRepository dataRepo,
-        IUserRepository userRepo,
-        IProductRepository productRepo,
-        ICustomerRepository customerRepo,
+        IUserService userService,
+        IOrderService orderService,
+        IProductService productService,
+        ICustomerService customerService,
         IValidationService validationService,
         INotificationService notificationService,
         IEmailService emailService,
         IPaymentService paymentService,
         IInventoryService inventoryService,
         IShippingService shippingService,
+        IDataRepository dataRepo,
         ILogger logger,
         IMapper mapper,
         IConfiguration config,
-        ICache cache)  // 14 dependencies!
+        ICache cache)  // 15 dependencies!
     {
-        // Real projects have 20-30+ injections
+        // Real projects have 20-30+ service injections
         // What layer is this? Business logic? Data access? Nobody knows!
     }
 }
