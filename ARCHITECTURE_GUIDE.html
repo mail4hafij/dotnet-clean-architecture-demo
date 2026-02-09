@@ -546,7 +546,7 @@
 <span class="keyword">public class</span> <span class="type">OrderLogic</span> : <span class="type">LogicBase</span>
 {
     <span class="keyword">private readonly</span> <span class="type">IRepositoryFactory</span> _repositoryFactory;
-    <span class="keyword">private readonly</span> <span class="type">ICarLogic</span> _carLogic;  <span class="comment">// Dependency injected via constructor!</span>
+    <span class="keyword">private readonly</span> <span class="type">ICarLogic</span> _carLogic;  <span class="comment">// Passed as parameter by Handler!</span>
 
     <span class="keyword">public</span> OrderLogic(
         <span class="type">IRepositoryFactory</span> repositoryFactory,
@@ -555,7 +555,7 @@
         : <span class="keyword">base</span>(unitOfWork)
     {
         _repositoryFactory = repositoryFactory;
-        _carLogic = carLogic;  <span class="comment">// Not created internally - passed in!</span>
+        _carLogic = carLogic;  <span class="comment">// Not created internally - passed in by Handler!</span>
     }
 
     <span class="keyword">public void</span> CreateOrder(<span class="keyword">long</span> userId, <span class="type">List</span>&lt;<span class="type">OrderItem</span>&gt; items)
