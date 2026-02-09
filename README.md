@@ -240,7 +240,7 @@ public class CreateOrderHandler : RequestHandler<CreateOrderReq, CreateOrderResp
 public class OrderLogic : LogicBase
 {
     private readonly IRepositoryFactory _repositoryFactory;
-    private readonly ICarLogic _carLogic;  // Dependency injected via constructor!
+    private readonly ICarLogic _carLogic;  // Passed as parameter by Handler!
 
     public OrderLogic(
         IRepositoryFactory repositoryFactory,
@@ -249,7 +249,7 @@ public class OrderLogic : LogicBase
         : base(unitOfWork)
     {
         _repositoryFactory = repositoryFactory;
-        _carLogic = carLogic;  // Not created internally - passed in!
+        _carLogic = carLogic;  // Not created internally - passed in by Handler!
     }
 
     public void CreateOrder(long userId, List<OrderItem> items)
@@ -284,20 +284,9 @@ public class OrderLogic : LogicBase
 
 ### 1. Dependency Visibility & Control
 
-Look at the constructor and immediately know the class's role:
-
-```csharp
-// Handler layer - orchestrates logic
-public ProcessRequestHandler(ILogicFactory logicFactory, IUnitOfWorkFactory uowFactory)
-
-// Logic layer - business rules using data + other logic
-public BusinessLogic(IRepositoryFactory repoFactory, ILogicFactory logicFactory, IUnitOfWork uow)
-
-// Repository layer - pure data access
-public DataRepository(IUnitOfWork uow)
-```
-
 **With traditional Service classes?** A "BusinessService" might inject 5 repositories, 8 other services, 3 mappers, 2 loggers, cache, config... Good luck figuring out what it does or what layer it represents!
+
+**With Factory Pattern?** The constructor signature immediately reveals the class's architectural role. Handler has factories, Logic has repositories and other Logic, Repository has only UnitOfWork. Clean, predictable, and self-documenting.
 
 ### 2. Prevents Circular Dependencies (Compile-Time Safety)
 
